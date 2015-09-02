@@ -5,6 +5,7 @@
 
 extern "C" {
   // Declares int rgb_palette[256]
+  #include "atari_ntsc_rgb_palette.h"
   ALEInterface *ALE_new() {return new ALEInterface();}
   void ALE_del(ALEInterface *ale){delete ale;}
   const char *getString(ALEInterface *ale, const char *key){return ale->getString(key).c_str();}
@@ -51,13 +52,18 @@ extern "C" {
   int getScreenWidth(ALEInterface *ale){return ale->getScreen().width();}
   int getScreenHeight(ALEInterface *ale){return ale->getScreen().height();}
 
-  void getScreenRGB(ALEInterface *ale, unsigned char *output_buffer){
+  void getScreenRGB(ALEInterface *ale, int *output_buffer){
     size_t w = ale->getScreen().width();
     size_t h = ale->getScreen().height();
     size_t screen_size = w*h;
     pixel_t *ale_screen_data = ale->getScreen().getArray();
 
-    ale->theOSystem->colourPalette().applyPaletteRGB(output_buffer, ale_screen_data, screen_size );
+        for(int i = 0;i < w*h;i++){
+          //std::cout << "going through pixel " << i << std::endl;
+            output_buffer[i] = rgb_palette[ale_screen_data[i]];
+        }
+
+    //ale->theOSystem->colourPalette().applyPaletteRGB(output_buffer, ale_screen_data, screen_size );
   }
 
   void getScreenGrayscale(ALEInterface *ale, unsigned char *output_buffer){
