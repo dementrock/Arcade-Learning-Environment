@@ -111,8 +111,10 @@ ALEState StellaEnvironment::cloneState() {
 /** Restores a previously saved copy of the state. */
 void StellaEnvironment::restoreState(const ALEState& target_state) {
   m_state.load(m_osystem, m_settings, m_cartridge_md5, target_state);
+  m_osystem->console().mediaSource().update();
+  processScreen();
+  processRAM();
 }
-
 
 void StellaEnvironment::noopIllegalActions(Action & player_a_action, Action & player_b_action) {
   if (player_a_action < (Action)PLAYER_B_NOOP && 
@@ -132,7 +134,7 @@ void StellaEnvironment::noopIllegalActions(Action & player_a_action, Action & pl
 }
 
 reward_t StellaEnvironment::act(Action player_a_action, Action player_b_action) {
-  
+
   // Total reward received as we repeat the action
   reward_t sum_rewards = 0;
 

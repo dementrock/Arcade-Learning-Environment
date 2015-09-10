@@ -23,6 +23,14 @@ ALEState::ALEState():
   m_episode_frame_number(0){
 }
 
+ALEState::ALEState(const ALEState &rhs):
+  m_left_paddle(rhs.m_left_paddle),
+  m_right_paddle(rhs.m_right_paddle),
+  m_frame_number(rhs.m_frame_number),
+  m_episode_frame_number(rhs.m_episode_frame_number),
+  m_serialized_state(rhs.m_serialized_state) {
+}
+
 ALEState::ALEState(const ALEState &rhs, std::string serialized):
   m_left_paddle(rhs.m_left_paddle),
   m_right_paddle(rhs.m_right_paddle),

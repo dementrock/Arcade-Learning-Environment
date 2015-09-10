@@ -73,6 +73,43 @@ ale_lib.loadState.argtypes = [c_void_p]
 ale_lib.loadState.restype = None
 ale_lib.saveScreenPNG.argtypes = [c_void_p, c_char_p]
 ale_lib.saveScreenPNG.restype = None
+ale_lib.cloneState.argtypes = [c_void_p]
+ale_lib.cloneState.restype = c_void_p
+ale_lib.restoreState.argtypes = [c_void_p, c_void_p]
+ale_lib.restoreState.restype = None
+
+ale_lib.ALEState_del.argtypes = [c_void_p]
+ale_lib.ALEState_del.restype = None
+ale_lib.ALEState_getFrameNumber.argtypes = [c_void_p]
+ale_lib.ALEState_getFrameNumber.restype = c_int
+ale_lib.ALEState_getEpisodeFrameNumber.argtypes = [c_void_p]
+ale_lib.ALEState_getEpisodeFrameNumber.restype = c_int
+ale_lib.ALEState_equals.argtypes = [c_void_p, c_void_p]
+ale_lib.ALEState_equals.restype = c_bool
+
+
+class ALEState(object):
+    def __init__(self, obj, ale):
+        self.obj = obj
+        self.ale = ale
+
+    def __del__(self):
+        ale_lib.ALEState_del(self.obj)
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) \
+                and ale_lib.ALEState_equals(self.obj, other.obj)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    @property
+    def frame_number(self):
+        return ale_lib.ALEState_getFrameNumber(self.obj)
+
+    @property
+    def episode_frame_number(self):
+        return ale_lib.ALEState_getEpisodeFrameNumber(self.obj)
 
 class ALEInterface(object):
     def __init__(self):
@@ -202,6 +239,14 @@ class ALEInterface(object):
 
     def loadState(self):
         return ale_lib.loadState(self.obj)
+
+    def cloneState(self):
+        return ALEState(ale_lib.cloneState(self.obj), self)
+
+    def restoreState(self, state):
+        if state.ale is not self:
+            raise ValueError('Can only restore state on the ale instance it yielded from')
+        return ale_lib.restoreState(self.obj, state.obj)
 
     def __del__(self):
         ale_lib.ALE_del(self.obj)

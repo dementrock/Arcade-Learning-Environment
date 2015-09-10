@@ -35,6 +35,8 @@
 class ALEState {
   public:
     ALEState();
+    // Copy constructor
+    ALEState(const ALEState &rhs);
     // Makes a copy of this state, also storing emulator information provided as a string
     ALEState(const ALEState &rhs, std::string serialized);
 

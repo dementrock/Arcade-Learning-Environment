@@ -23,3 +23,5 @@ build
 *.pyc
 *.bin
 ale_python_test*
+ale
+doc/examples/sharedLibraryInterfaceExample

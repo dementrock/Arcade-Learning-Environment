@@ -58,12 +58,10 @@ extern "C" {
     size_t screen_size = w*h;
     pixel_t *ale_screen_data = ale->getScreen().getArray();
 
-        for(int i = 0;i < w*h;i++){
-          //std::cout << "going through pixel " << i << std::endl;
-            output_buffer[i] = rgb_palette[ale_screen_data[i]];
-        }
+    for(int i = 0;i < w*h;i++){
+        output_buffer[i] = rgb_palette[ale_screen_data[i]];
+    }
 
-    //ale->theOSystem->colourPalette().applyPaletteRGB(output_buffer, ale_screen_data, screen_size );
   }
 
   void getScreenGrayscale(ALEInterface *ale, unsigned char *output_buffer){
@@ -78,6 +76,31 @@ extern "C" {
   void saveState(ALEInterface *ale){ale->saveState();}
   void loadState(ALEInterface *ale){ale->loadState();}
   void saveScreenPNG(ALEInterface *ale,const char *filename){ale->saveScreenPNG(filename);}
+
+  ALEState* cloneState(ALEInterface *ale) {
+    return new ALEState(ale->cloneState());
+  }
+
+  void ALEState_del(ALEState* state) {
+    delete state;
+  }
+
+  void restoreState(ALEInterface *ale, ALEState* state) {
+    ale->restoreState(*state);
+  }
+
+  int ALEState_getFrameNumber(ALEState* state) {
+    return state->getFrameNumber();
+  }
+
+  int ALEState_getEpisodeFrameNumber(ALEState* state) {
+    return state->getEpisodeFrameNumber();
+  }
+
+  bool ALEState_equals(ALEState* a, ALEState *b) {
+    return a->equals(*b);
+  }
+
 }
 
 #endif
