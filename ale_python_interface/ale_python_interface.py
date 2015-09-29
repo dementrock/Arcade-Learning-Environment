@@ -1,3 +1,4 @@
+# flake8: noqa
 # ale_python_interface.py
 # Author: Ben Goodrich
 # This directly implements a python version of the arcade learning
@@ -87,6 +88,12 @@ ale_lib.ALEState_getEpisodeFrameNumber.restype = c_int
 ale_lib.ALEState_equals.argtypes = [c_void_p, c_void_p]
 ale_lib.ALEState_equals.restype = c_bool
 
+ale_lib.setLoggerLevelInfo.argtypes = None
+ale_lib.setLoggerLevelInfo.restypes = None
+ale_lib.setLoggerLevelWarning.argtypes = None
+ale_lib.setLoggerLevelWarning.restypes = None
+ale_lib.setLoggerLevelError.argtypes = None
+ale_lib.setLoggerLevelError.restypes = None
 
 class ALEState(object):
     def __init__(self, obj, ale):

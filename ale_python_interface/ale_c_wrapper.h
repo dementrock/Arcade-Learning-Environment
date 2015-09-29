@@ -101,6 +101,19 @@ extern "C" {
     return a->equals(*b);
   }
 
+  void setLoggerLevelInfo() {
+    ale::Logger::setMode(ale::Logger::Info);
+  }
+
+  void setLoggerLevelWarning() {
+    ale::Logger::setMode(ale::Logger::Warning);
+  }
+
+  void setLoggerLevelError() {
+    ale::Logger::setMode(ale::Logger::Error);
+  }
+
+
 }
 
 #endif
