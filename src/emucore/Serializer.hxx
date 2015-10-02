@@ -66,6 +66,8 @@ class Serializer
     */
     void putInt(int value);
 
+    void putByte(char value);
+
     /**
       Writes a string to the current output stream.
 

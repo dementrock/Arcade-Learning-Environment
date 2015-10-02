@@ -264,6 +264,11 @@ const ALERAM& ALEInterface::getRAM() {
   return environment->getRAM();
 }
 
+// Set new RAM content
+void ALEInterface::setRAM(unsigned char* new_ram) {
+  return environment->setRAM(new_ram);
+}
+
 // Saves the state of the system
 void ALEInterface::saveState() {
   environment->save();

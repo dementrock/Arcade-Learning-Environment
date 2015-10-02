@@ -53,6 +53,8 @@ class Deserializer {
          @result The int value which has been read from the stream.
          */
         int getInt(void);
+
+        char getByte(void);
         
         /**
          Reads a string from the current input stream.

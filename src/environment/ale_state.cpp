@@ -39,6 +39,14 @@ ALEState::ALEState(const ALEState &rhs, std::string serialized):
   m_serialized_state(serialized) {
 }
 
+ALEState::ALEState(int left_paddle, int right_paddle, int frame_number, int episode_frame_number, const std::string& serialized):
+  m_left_paddle(left_paddle),
+  m_right_paddle(right_paddle),
+  m_frame_number(frame_number),
+  m_episode_frame_number(episode_frame_number),
+  m_serialized_state(serialized) {
+}
+
 /** Restores ALE to the given previously saved state. */ 
 void ALEState::load(OSystem* osystem, RomSettings* settings, std::string md5, const ALEState &rhs) {
   assert(rhs.m_serialized_state.length() > 0);
@@ -73,8 +81,8 @@ void ALEState::incrementFrame(int steps /* = 1 */) {
 }
 
 void ALEState::resetEpisodeFrameNumber(){
-        m_episode_frame_number = 0;
-    }
+    m_episode_frame_number = 0;
+}
 
 
 

@@ -245,3 +245,11 @@ void StellaEnvironment::processRAM() {
     *m_ram.byte(i) = m_osystem->console().system().peek(i + 0x80); 
 }
 
+void StellaEnvironment::setRAM(unsigned char* new_ram) {
+  // Copy RAM over
+  for (size_t i = 0; i < m_ram.size(); i++)
+    m_osystem->console().system().poke(i + 0x80, new_ram[i]);
+  m_osystem->console().mediaSource().update();
+  processScreen();
+  processRAM();
+}

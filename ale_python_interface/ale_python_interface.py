@@ -12,6 +12,16 @@ import os
 ale_lib = cdll.LoadLibrary(os.path.join(os.path.dirname(__file__),
                                         'libale_c.so'))
 
+def to_uint8_array(x):
+    # x should be an integer
+    return 
+class SERSTRING(Structure):
+    
+    _fields_ = [
+        ("size", c_uint),
+        ("data", POINTER(c_uint8)),
+    ]
+
 ale_lib.ALE_new.argtypes = None
 ale_lib.ALE_new.restype = c_void_p
 ale_lib.ALE_del.argtypes = [c_void_p]
@@ -60,6 +70,8 @@ ale_lib.getRAM.argtypes = [c_void_p, c_void_p]
 ale_lib.getRAM.restype = None
 ale_lib.getRAMSize.argtypes = [c_void_p]
 ale_lib.getRAMSize.restype = c_int
+ale_lib.setRAM.argtypes = [c_void_p, c_void_p]
+ale_lib.setRAM.restype = None
 ale_lib.getScreenWidth.argtypes = [c_void_p]
 ale_lib.getScreenWidth.restype = c_int
 ale_lib.getScreenHeight.argtypes = [c_void_p]
@@ -85,8 +97,19 @@ ale_lib.ALEState_getFrameNumber.argtypes = [c_void_p]
 ale_lib.ALEState_getFrameNumber.restype = c_int
 ale_lib.ALEState_getEpisodeFrameNumber.argtypes = [c_void_p]
 ale_lib.ALEState_getEpisodeFrameNumber.restype = c_int
+ale_lib.ALEState_getLeftPaddle.argtypes = [c_void_p]
+ale_lib.ALEState_getLeftPaddle.restype = c_int
+ale_lib.ALEState_getRightPaddle.argtypes = [c_void_p]
+ale_lib.ALEState_getRightPaddle.restype = c_int
+ale_lib.ALEState_getSerializedState.argtypes = [c_void_p]
+ale_lib.ALEState_getSerializedState.restype = SERSTRING
+
 ale_lib.ALEState_equals.argtypes = [c_void_p, c_void_p]
 ale_lib.ALEState_equals.restype = c_bool
+
+ale_lib.loadSerialized.argtypes = [c_void_p, c_int, c_int, c_int, c_int, c_int, c_char_p]
+ale_lib.ALEState_equals.restype = None
+
 
 ale_lib.setLoggerLevelInfo.argtypes = None
 ale_lib.setLoggerLevelInfo.restypes = None
@@ -257,3 +280,30 @@ class ALEInterface(object):
 
     def __del__(self):
         ale_lib.ALE_del(self.obj)
+
+    def get_serialized(self):
+        state = ale_lib.cloneState(self.obj)
+        ser = ale_lib.ALEState_getSerializedState(state)
+        serialized_state = np.fromiter(ser.data, dtype=np.uint8, count=ser.size)
+
+        from struct import pack
+
+        stats = np.fromstring(pack(
+            'iiii',
+            ale_lib.ALEState_getLeftPaddle(state),
+            ale_lib.ALEState_getRightPaddle(state),
+            ale_lib.ALEState_getFrameNumber(state),
+            ale_lib.ALEState_getEpisodeFrameNumber(state)
+        ), dtype=np.uint8)
+
+        return np.concatenate([stats, serialized_state])
+
+    def load_serialized(self, ser):
+        stats_bytes, ser_bytes = ser[0:16], ser[16:]
+        from struct import unpack
+        left_paddle, right_paddle, frame_number, episode_frame_number = \
+                unpack('iiii', stats_bytes)
+        ale_lib.loadSerialized(
+            self.obj, frame_number, episode_frame_number, left_paddle,
+            right_paddle, len(ser_bytes),
+            ser_bytes.ctypes.data_as(POINTER(c_char)))

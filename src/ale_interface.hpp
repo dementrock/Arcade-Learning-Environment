@@ -111,6 +111,9 @@ public:
   // Returns the current RAM content
   const ALERAM &getRAM();
 
+  // Set new RAM content
+  void setRAM(unsigned char* new_ram);
+
   // Saves the state of the system
   void saveState();
 

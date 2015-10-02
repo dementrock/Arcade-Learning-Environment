@@ -39,6 +39,16 @@ void Serializer::close(void)
     myStream.clear();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Serializer::putByte(char value)
+{
+    unsigned char buf[1];
+    buf[0] = value;
+    myStream.write((char*)buf, 1);
+    if(myStream.bad())
+        throw "Serializer: file write failed";
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putInt(int value)

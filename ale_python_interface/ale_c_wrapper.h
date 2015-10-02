@@ -43,11 +43,15 @@ extern "C" {
     pixel_t *ale_screen_data = (pixel_t *)ale->getScreen().getArray();
     memcpy(screen_data,ale_screen_data,w*h*sizeof(pixel_t));
   }
+  void setRAM(ALEInterface *ale,unsigned char *ram){
+    ale->setRAM(ram);
+  }
   void getRAM(ALEInterface *ale,unsigned char *ram){
     unsigned char *ale_ram = ale->getRAM().array();
     int size = ale->getRAM().size();
     memcpy(ram,ale_ram,size*sizeof(unsigned char));
   }
+
   int getRAMSize(ALEInterface *ale){return ale->getRAM().size();}
   int getScreenWidth(ALEInterface *ale){return ale->getScreen().width();}
   int getScreenHeight(ALEInterface *ale){return ale->getScreen().height();}
@@ -97,6 +101,29 @@ extern "C" {
     return state->getEpisodeFrameNumber();
   }
 
+  int ALEState_getLeftPaddle(ALEState* state) {
+    return state->getLeftPaddle();
+  }
+
+  int ALEState_getRightPaddle(ALEState* state) {
+    return state->getRightPaddle();
+  }
+
+  struct ser_string {
+    unsigned int size;
+    char* data;
+  };
+
+  ser_string ALEState_getSerializedState(ALEState* state) {
+    std::string ser = state->getSerializedState();
+    char* cpy = new char[ser.length()];
+    memcpy(cpy, ser.c_str(), ser.length());
+    ser_string ret;
+    ret.data = cpy;
+    ret.size = ser.length();
+    return ret;
+  }
+
   bool ALEState_equals(ALEState* a, ALEState *b) {
     return a->equals(*b);
   }
@@ -111,6 +138,18 @@ extern "C" {
 
   void setLoggerLevelError() {
     ale::Logger::setMode(ale::Logger::Error);
+  }
+
+  void loadSerialized(ALEInterface *ale,
+      int left_paddle, int right_paddle, int frame_number,
+      int episode_frame_number, int n_ser_bytes, char* ser_bytes) {
+
+    std::string ser_string(ser_bytes, n_ser_bytes);
+    
+    ALEState state(
+        left_paddle, right_paddle, frame_number, episode_frame_number,
+        ser_string);
+    ale->restoreState(state);
   }
 
 

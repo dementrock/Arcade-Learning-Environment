@@ -39,6 +39,7 @@ class ALEState {
     ALEState(const ALEState &rhs);
     // Makes a copy of this state, also storing emulator information provided as a string
     ALEState(const ALEState &rhs, std::string serialized);
+    ALEState(int left_paddle, int right_paddle, int frame_number, int episode_frame_number, const std::string& serialized);
 
     /** Resets the system to its start state. numResetSteps 'RESET' actions are taken after the
       *  start. */
@@ -65,6 +66,10 @@ class ALEState {
     //Get the number of frames executed this episode.
     const int getEpisodeFrameNumber() const { return m_episode_frame_number; }
 
+    const int getLeftPaddle() const { return m_left_paddle; }
+    const int getRightPaddle() const { return m_right_paddle; }
+
+    std::string getSerializedState() const { return m_serialized_state; }
 
   protected:
     // Let StellaEnvironment access these methods: they are needed for emulation purposes

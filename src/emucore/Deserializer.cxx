@@ -36,6 +36,16 @@ void Deserializer::close(void)
 }
 
 
+char Deserializer::getByte(void)
+{
+  if(myStream.eof())
+    throw "Deserializer: end of file";
+
+  char buf[1];
+  myStream.read((char*)buf, 1);
+
+  return buf[0];
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Deserializer::getInt(void)
