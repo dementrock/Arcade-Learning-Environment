@@ -16,6 +16,9 @@
 #include "Defaults.hpp"
 
 void setDefaultSettings(Settings &settings) {
+    // Stella settings
+    settings.setString("cpu", "low"); // Reduce CPU emulation fidelity for speed 
+
     // Controller settings
     settings.setInt("max_num_frames", 0);
     settings.setInt("max_num_frames_per_episode", 0);
@@ -26,7 +29,7 @@ void setDefaultSettings(Settings &settings) {
     // Environment customization settings
     settings.setBool("restricted_action_set", false);
     settings.setString("random_seed", "time");
-    settings.setBool("color_averaging", false);
+    settings.setBool("color_averaging", true);
     settings.setBool("send_rgb", false);
     settings.setInt("frame_skip", 1);
     settings.setFloat("repeat_action_probability", 0.25);

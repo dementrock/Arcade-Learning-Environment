@@ -23,6 +23,7 @@
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "OSystem.hxx"
 #include <iostream>
 using namespace std;
 #include "../common/Log.hpp"
@@ -31,13 +32,11 @@ using namespace std;
 M6532::M6532(const Console& console)
     : myConsole(console)
 {
-  class Random random;
-
   // Randomize the 128 bytes of memory
 
   for(uInt32 t = 0; t < 128; ++t)
   {
-    myRAM[t] = random.next();
+    myRAM[t] = myConsole.osystem().rng().next();
   }
 
   // Initialize other data members
@@ -58,9 +57,7 @@ const char* M6532::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {
-  class Random random;
-
-  myTimer = 25 + (random.next() % 75);
+  myTimer = 25 + (myConsole.osystem().rng().next() % 75);
   myIntervalShift = 6;
   myCyclesWhenTimerSet = 0;
   myCyclesWhenInterruptReset = 0;
@@ -334,7 +331,7 @@ bool M6532::save(Serializer& out)
     // Output the RAM
     out.putInt(128);
     for(uInt32 t = 0; t < 128; ++t)
-      out.putInt(myRAM[t]);
+      out.putByte(myRAM[t]);
 
     out.putInt(myTimer);
     out.putInt(myIntervalShift);
@@ -371,7 +368,7 @@ bool M6532::load(Deserializer& in)
     // Input the RAM
     uInt32 limit = (uInt32) in.getInt();
     for(uInt32 t = 0; t < limit; ++t) {
-      myRAM[t] = (uInt8) in.getInt();
+      myRAM[t] = (uInt8) in.getByte();
     }
 
     myTimer = (uInt32) in.getInt();
