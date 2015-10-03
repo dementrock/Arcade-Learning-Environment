@@ -70,8 +70,6 @@ ale_lib.getRAM.argtypes = [c_void_p, c_void_p]
 ale_lib.getRAM.restype = None
 ale_lib.getRAMSize.argtypes = [c_void_p]
 ale_lib.getRAMSize.restype = c_int
-ale_lib.setRAM.argtypes = [c_void_p, c_void_p]
-ale_lib.setRAM.restype = None
 ale_lib.getScreenWidth.argtypes = [c_void_p]
 ale_lib.getScreenWidth.restype = c_int
 ale_lib.getScreenHeight.argtypes = [c_void_p]
@@ -299,11 +297,12 @@ class ALEInterface(object):
         return np.concatenate([stats, serialized_state])
 
     def load_serialized(self, ser):
+        ser = ser.astype(np.uint8)
         stats_bytes, ser_bytes = ser[0:16], ser[16:]
         from struct import unpack
         left_paddle, right_paddle, frame_number, episode_frame_number = \
                 unpack('iiii', stats_bytes)
         ale_lib.loadSerialized(
-            self.obj, frame_number, episode_frame_number, left_paddle,
-            right_paddle, len(ser_bytes),
+            self.obj, left_paddle, right_paddle, frame_number, episode_frame_number,
+            len(ser_bytes),
             ser_bytes.ctypes.data_as(POINTER(c_char)))

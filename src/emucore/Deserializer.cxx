@@ -56,8 +56,9 @@ int Deserializer::getInt(void)
   int val = 0;
   unsigned char buf[4];
   myStream.read((char*)buf, 4);
-  for(int i = 0; i < 4; ++i)
+  for(int i = 0; i < 4; ++i) {
     val += (int)(buf[i]) << (i<<3);
+  }
 
   return val;
 }

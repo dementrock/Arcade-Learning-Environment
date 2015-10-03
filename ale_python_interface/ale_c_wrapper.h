@@ -43,9 +43,6 @@ extern "C" {
     pixel_t *ale_screen_data = (pixel_t *)ale->getScreen().getArray();
     memcpy(screen_data,ale_screen_data,w*h*sizeof(pixel_t));
   }
-  void setRAM(ALEInterface *ale,unsigned char *ram){
-    ale->setRAM(ram);
-  }
   void getRAM(ALEInterface *ale,unsigned char *ram){
     unsigned char *ale_ram = ale->getRAM().array();
     int size = ale->getRAM().size();

@@ -54,8 +54,9 @@ void Serializer::putByte(char value)
 void Serializer::putInt(int value)
 {
     unsigned char buf[4];
-    for(int i = 0; i < 4; ++i)
+    for(int i = 0; i < 4; ++i) {
         buf[i] = (value >> (i<<3)) & 0xff;
+    }
     
     myStream.write((char*)buf, 4);
     if(myStream.bad())
@@ -68,7 +69,7 @@ void Serializer::putString(const string& str)
     int len = str.length();
     putInt(len);
     myStream.write(str.data(), (streamsize)len);
-    
+
     if(myStream.bad())
         throw "Serializer: file write failed";
 }

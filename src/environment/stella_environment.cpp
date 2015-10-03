@@ -111,9 +111,6 @@ ALEState StellaEnvironment::cloneState() {
 /** Restores a previously saved copy of the state. */
 void StellaEnvironment::restoreState(const ALEState& target_state) {
   m_state.load(m_osystem, m_settings, m_cartridge_md5, target_state);
-  m_osystem->console().mediaSource().update();
-  processScreen();
-  processRAM();
 }
 
 void StellaEnvironment::noopIllegalActions(Action & player_a_action, Action & player_b_action) {
@@ -243,13 +240,4 @@ void StellaEnvironment::processRAM() {
   // Copy RAM over
   for (size_t i = 0; i < m_ram.size(); i++)
     *m_ram.byte(i) = m_osystem->console().system().peek(i + 0x80); 
-}
-
-void StellaEnvironment::setRAM(unsigned char* new_ram) {
-  // Copy RAM over
-  for (size_t i = 0; i < m_ram.size(); i++)
-    m_osystem->console().system().poke(i + 0x80, new_ram[i]);
-  m_osystem->console().mediaSource().update();
-  processScreen();
-  processRAM();
 }

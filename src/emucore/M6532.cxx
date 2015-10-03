@@ -334,7 +334,7 @@ bool M6532::save(Serializer& out)
     // Output the RAM
     out.putInt(128);
     for(uInt32 t = 0; t < 128; ++t)
-      out.putByte(myRAM[t]);
+      out.putInt(myRAM[t]);
 
     out.putInt(myTimer);
     out.putInt(myIntervalShift);
@@ -370,8 +370,9 @@ bool M6532::load(Deserializer& in)
 
     // Input the RAM
     uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 t = 0; t < limit; ++t)
-      myRAM[t] = (uInt8) in.getByte();
+    for(uInt32 t = 0; t < limit; ++t) {
+      myRAM[t] = (uInt8) in.getInt();
+    }
 
     myTimer = (uInt32) in.getInt();
     myIntervalShift = (uInt32) in.getInt();

@@ -225,9 +225,10 @@ bool System::saveState(const string& md5sum, Serializer& out)
       return false;
 
     // Now save the state of each device
-    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+    for(uInt32 i = 0; i < myNumberOfDevices; ++i) {
       if(!myDevices[i]->save(out))
         return false;
+    }
   }
   catch(char *msg)
   {
@@ -266,9 +267,10 @@ bool System::loadState(const string& md5sum, Deserializer& in)
       return false;
 
     // Now load the state of each device
-    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+    for(uInt32 i = 0; i < myNumberOfDevices; ++i) {
       if(!myDevices[i]->load(in))
         return false;
+    }
   }
   catch(char *msg)
   {
