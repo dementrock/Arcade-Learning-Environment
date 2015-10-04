@@ -89,6 +89,9 @@ ale_lib.cloneState.restype = c_void_p
 ale_lib.restoreState.argtypes = [c_void_p, c_void_p]
 ale_lib.restoreState.restype = None
 
+ale_lib.delSerString.argtypes = [c_void_p]
+ale_lib.delSerString.restype = None
+
 ale_lib.ALEState_del.argtypes = [c_void_p]
 ale_lib.ALEState_del.restype = None
 ale_lib.ALEState_getFrameNumber.argtypes = [c_void_p]
@@ -283,6 +286,8 @@ class ALEInterface(object):
         state = ale_lib.cloneState(self.obj)
         ser = ale_lib.ALEState_getSerializedState(state)
         serialized_state = np.fromiter(ser.data, dtype=np.uint8, count=ser.size)
+        ale_lib.delSerString(ser.data)
+        ale_lib.ALEState_del(state)
 
         from struct import pack
 

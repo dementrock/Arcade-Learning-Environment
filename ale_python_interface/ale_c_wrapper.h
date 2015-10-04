@@ -111,6 +111,10 @@ extern "C" {
     char* data;
   };
 
+  void delSerString(char* data) {
+    delete [] data;
+  }
+
   ser_string ALEState_getSerializedState(ALEState* state) {
     std::string ser = state->getSerializedState();
     char* cpy = new char[ser.length()];
